@@ -1,0 +1,45 @@
+{
+  "name": "react-raw-html",
+  "version": "0.0.1",
+  "description": "React component to render raw HTML without explicitly setting innerHTML property.",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc || exit 1",
+    "check": "tslint --project . --fix || exit 1",
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://Cerberuser@github.com/Cerberuser/react-raw-html.git"
+  },
+  "keywords": [
+    "react",
+    "html"
+  ],
+  "author": "Cerberuser",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Cerberuser/react-raw-html/issues"
+  },
+  "homepage": "https://github.com/Cerberuser/react-raw-html#readme",
+  "devDependencies": {
+    "@types/jest": "24.0.13",
+    "@types/react": "16.8.18",
+    "@types/react-test-renderer": "16.8.1",
+    "husky": "2.3.0",
+    "jest": "24.8.0",
+    "react": "16.8.6",
+    "react-test-renderer": "16.8.6",
+    "tslint": "5.16.0",
+    "tslint-react": "4.0.0",
+    "typescript": "3.4.5"
+  },
+  "peerDependencies": {
+    "react": ">= 16.0.0"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "yarn test && yarn check && yarn build && git add ./dist/*"
+    }
+  }
+}
