@@ -40,7 +40,7 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "yarn test --coverage && yarn run check && yarn build && git add ./dist/* && git add ./coverage/**/*"
+      "pre-commit": "yarn test --coverage && yarn run check && yarn build && git add ./dist/* && git add ./coverage/**/* && git add ./coverage/*"
     }
   }
 }
