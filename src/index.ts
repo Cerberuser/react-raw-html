@@ -1,1 +1,1 @@
-export const HTMLComponent = 'To be created';
+export const HTMLComponent = "To be created";

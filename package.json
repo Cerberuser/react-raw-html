@@ -39,7 +39,7 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "yarn test && yarn check && yarn build && git add ./dist/*"
+      "pre-commit": "yarn test && yarn run check && yarn build && git add ./dist/*"
     }
   }
 }
