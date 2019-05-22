@@ -14,7 +14,7 @@ const React = __importStar(require("react"));
 const react_test_renderer_1 = __importDefault(require("react-test-renderer"));
 const src_1 = require("../src");
 test("Raw HTML renders correctly", () => {
-    const component = react_test_renderer_1.default.create(React.createElement(src_1.HTMLComponent, { rawHTML: "<span>Text</span>" }));
+    const component = react_test_renderer_1.default.create(React.createElement(src_1.HTMLComponent, { rawHTML: "<span>Text</span>Text<!--Comment-->" }));
     const tree = component.toJSON();
     expect(tree).toMatchSnapshot();
 });

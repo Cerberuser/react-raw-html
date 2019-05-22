@@ -7,14 +7,21 @@ export interface HTMLComponentProps {
 export class HTMLComponent extends React.Component<HTMLComponentProps> {
 
     render() {
-        this.parseHTML();
-        return <div dangerouslySetInnerHTML={{__html: this.props.rawHTML}}/>;
+        return <React.Fragment>{this.parseHTML()}</React.Fragment>;
     }
 
     parseHTML() {
         const div = document.createElement("div");
         div.innerHTML = this.props.rawHTML;
-        return div.childNodes;
+        return Array.from(div.childNodes).map((node) => {
+            if (node instanceof Element) {
+                return React.createElement(node.tagName);
+            } else if (node instanceof Text) {
+                return node.textContent;
+            } else {
+                return "Unknown node";
+            }
+        });
     }
 
 }
