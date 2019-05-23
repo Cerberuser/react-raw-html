@@ -11,5 +11,8 @@
         "member-ordering": false,
         "jsx-no-multiline-js": false
     },
-    "rulesDirectory": []
+    "rulesDirectory": [],
+    "linterOptions": {
+        "exclude": ["dist"]
+    }
 }

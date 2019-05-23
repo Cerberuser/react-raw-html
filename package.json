@@ -4,9 +4,12 @@
     "description": "React component to render raw HTML without explicitly setting innerHTML property.",
     "main": "dist/index.js",
     "scripts": {
-        "build": "tsc || exit 1",
+        "build": "rimraf ./dist && tsc || exit 1",
         "check": "tslint --project . --fix || exit 1",
-        "test": "jest"
+        "clean": "rimraf ./coverage && rimraf ./dist",
+        "lifecycle": "yarn test --coverage && yarn run check && yarn build",
+        "git-add": "git add ./dist/*",
+        "test": "karma start"
     },
     "repository": {
         "type": "git",
@@ -24,18 +27,23 @@
     "homepage": "https://github.com/Cerberuser/react-raw-html#readme",
     "devDependencies": {
         "@types/common-tags": "1.8.0",
-        "@types/jest": "24.0.13",
-        "@types/jsdom": "^12.2.3",
+        "@types/jasmine": "3.3.12",
+        "@types/karma": "3.0.2",
         "@types/react": "16.8.18",
-        "@types/react-test-renderer": "16.8.1",
+        "@types/react-dom": "16.8.4",
         "common-tags": "1.8.0",
         "husky": "2.3.0",
-        "jest": "24.8.0",
+        "jasmine": "3.4.0",
+        "karma": "4.1.0",
+        "karma-chrome-launcher": "2.2.0",
+        "karma-firefox-launcher": "1.1.0",
+        "karma-jasmine": "2.0.1",
+        "karma-typescript": "4.0.0",
         "react": "16.8.6",
-        "react-dom": "^16.8.6",
+        "react-dom": "16.8.6",
         "react-test-renderer": "16.8.6",
         "react-testing-library": "^7.0.1",
-        "ts-jest": "24.0.2",
+        "rimraf": "2.6.3",
         "tslint": "5.16.0",
         "tslint-react": "4.0.0",
         "typescript": "3.4.5"
@@ -45,7 +53,7 @@
     },
     "husky": {
         "hooks": {
-            "pre-commit": "yarn test --coverage && yarn run check && yarn build && git add ./dist/* && git add ./coverage/**/* && git add ./coverage/*"
+            "pre-commit": "yarn clean && yarn lifecycle && yarn git-add"
         }
     }
 }

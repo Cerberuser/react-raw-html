@@ -14,5 +14,6 @@
         "noFallthroughCasesInSwitch": true,
         "moduleResolution": "node",
         "esModuleInterop": true
-    }
+    },
+    "exclude": ["test"]
 }

@@ -1,1 +1,1 @@
-export declare const HTMLComponent = "To be created";
+export { HTMLComponent } from "./components/HTMLComponent";
