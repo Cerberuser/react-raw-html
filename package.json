@@ -4,10 +4,9 @@
     "description": "React component to render raw HTML without explicitly setting innerHTML property.",
     "main": "dist/index.js",
     "scripts": {
-        "build": "rimraf ./dist && tsc || exit 1",
+        "build": "rimraf ./dist && tsc -p tsconfig.build.json || exit 1",
         "check": "tslint --project . --fix || exit 1",
         "clean": "rimraf ./coverage && rimraf ./dist",
-        "lifecycle": "yarn test --coverage && yarn run check && yarn build",
         "git-add": "git add ./dist/*",
         "test": "karma start"
     },
@@ -53,7 +52,7 @@
     },
     "husky": {
         "hooks": {
-            "pre-commit": "yarn clean && yarn lifecycle && yarn git-add"
+            "pre-commit": "yarn clean && yarn run check && yarn build && yarn git-add"
         }
     }
 }

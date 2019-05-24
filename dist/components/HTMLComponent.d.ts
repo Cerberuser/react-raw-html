@@ -4,8 +4,6 @@ export interface HTMLComponentProps {
 }
 export declare class HTMLComponent extends React.Component<HTMLComponentProps> {
     render(): JSX.Element;
-    parseHTML(): (string | React.DOMElement<{
-        children: (string | null)[];
-        key: number;
-    }, Element> | null)[];
+    private parseHTML;
+    private mapChild;
 }

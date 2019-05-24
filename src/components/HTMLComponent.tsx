@@ -11,24 +11,31 @@ export class HTMLComponent extends React.Component<HTMLComponentProps> {
         return <React.Fragment>{this.parseHTML()}</React.Fragment>;
     }
 
-    parseHTML() {
+    private parseHTML() {
         const div = document.createElement("div");
         div.innerHTML = this.props.rawHTML;
-        return Array.from(div.childNodes).map((node, i) => {
-            if (node instanceof Element) {
-                if (node instanceof HTMLScriptElement) {
-                    return <Script rawTag={node}/>;
-                }
-                return React.createElement(node.tagName.toLowerCase(), {
-                    children: Array.from(node.childNodes).map((innerNode) => innerNode.textContent),
-                    key: i,
-                });
-            } else if (node instanceof Text) {
-                return node.textContent;
-            } else {
-                return "Unknown node";
-            }
-        });
+        return Array.from(div.childNodes).map(this.mapChild);
     }
+
+    private mapChild = (child: ChildNode, index: number): React.ReactNode => {
+        if (child instanceof Element) {
+            if (child instanceof HTMLScriptElement) {
+                return <Script key={"script-" + index} rawTag={child}/>;
+            }
+            return React.createElement(child.tagName.toLowerCase(), {
+                children: Array.from(child.childNodes).map(this.mapChild),
+                key: child.tagName + "-" + index,
+                ...(Array.from(child.attributes).reduce((obj, prop) => ({
+                    ...obj,
+                    [prop.name]: prop.value,
+                }), {})),
+            });
+        } else if (child instanceof Text) {
+            const text = child.textContent;
+            return !text || text.trim() === "" ? null : text;
+        } else {
+            return "Unknown node";
+        }
+    };
 
 }

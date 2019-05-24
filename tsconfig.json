@@ -1,6 +1,7 @@
 {
     "compilerOptions": {
         "target": "es6",
+        "lib": ["dom","es7"],
         "module": "commonjs",
         "jsx": "react",
         "declaration": true,
@@ -14,6 +15,5 @@
         "noFallthroughCasesInSwitch": true,
         "moduleResolution": "node",
         "esModuleInterop": true
-    },
-    "exclude": ["test"]
+    }
 }

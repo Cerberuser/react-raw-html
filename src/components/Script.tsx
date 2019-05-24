@@ -13,8 +13,15 @@ export class Script extends React.Component<IScriptProps> {
 
     componentDidMount() {
         const node = ReactDOM.findDOMNode(this) as Element;
+        const script = document.createElement("script");
+        script.textContent = this.props.rawTag.textContent;
+        for (const prop in this.props.rawTag.attributes) {
+            if (this.props.rawTag.getAttribute(prop)) {
+                script.setAttribute(prop, this.props.rawTag.getAttribute(prop)!);
+            }
+        }
         node.innerHTML = "";
-        node.appendChild(this.props.rawTag);
+        node.appendChild(script);
     }
 
 }
