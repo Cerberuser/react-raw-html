@@ -1,10 +1,10 @@
 // tslint:disable:no-console
 
-import { html } from "common-tags";
+import {html} from "common-tags";
 import "jasmine";
 import * as React from "react";
 import * as ReactDOM from "react-dom";
-import { HTMLComponent } from "../src";
+import {HTMLComponent} from "../src";
 
 function container() {
     return document.querySelector("#container")!;
@@ -24,7 +24,9 @@ function checkNode<T, C extends new (...args: any[]) => T>(
     Object.entries(props).forEach(([name, value]) => expect(node[name as keyof T]).toBe(value));
 }
 
-describe("General tests", () => {
+beforeEach(() => document.body.innerHTML = '<div id="container"></div>');
+
+describe("Generally", () => {
     beforeEach(() => document.body.innerHTML = '<div id="container"></div>');
 
     it("should shallowly render raw HTML", () => {
@@ -69,11 +71,14 @@ describe("General tests", () => {
         render(html`
             <div>
                 <a id="link" href="https://github.com/Cerberuser/react-raw-html">
-                    <img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Logo.png"/>
+                    <img
+                        src="https://github.githubassets.com/images/modules/logos_page/GitHub-Logo.png"
+                        alt="GitHub Logo"
+                    />
                     Raw HTML React renderer on GitHub
                 </a>
                 <div id="inner">
-                    <span style="visibility: hidden;">
+                    <span style="align-content: baseline; display: none;">
                         Hidden text, not for customers' use
                     </span>
                     <b>
@@ -89,6 +94,9 @@ describe("General tests", () => {
         // TODO write full test
     });
 
+});
+
+describe("Rendering scripts", () => {
     it("should execute inline scripts", () => {
         render(html`
             <script>window.__testVar__ = 1;</script>

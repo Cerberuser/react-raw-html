@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Script } from "./Script";
+import {Script} from "./Script";
 
 export interface HTMLComponentProps {
     rawHTML: string;
@@ -23,12 +23,9 @@ export class HTMLComponent extends React.Component<HTMLComponentProps> {
                 return <Script key={"script-" + index} rawTag={child}/>;
             }
             return React.createElement(child.tagName.toLowerCase(), {
-                children: Array.from(child.childNodes).map(this.mapChild),
+                children: child.childNodes.length > 0 ? Array.from(child.childNodes).map(this.mapChild) : null,
                 key: child.tagName + "-" + index,
-                ...(Array.from(child.attributes).reduce((obj, prop) => ({
-                    ...obj,
-                    [prop.name]: prop.value,
-                }), {})),
+                ...this.mapAttributes(child),
             });
         } else if (child instanceof Text) {
             const text = child.textContent;
@@ -36,6 +33,23 @@ export class HTMLComponent extends React.Component<HTMLComponentProps> {
         } else {
             return "Unknown node";
         }
+    }
+
+    private mapAttributes = (child: Element) => {
+        const mapAttr = (attr: Attr) => {
+            switch (attr.name) {
+                case "style":
+                    const style = (child as HTMLElement).style;
+                    return Array.from(style)
+                        .reduce((obj, key) => ({...obj, [key]: style[key as keyof CSSStyleDeclaration]}), {});
+                default:
+                    return attr.value;
+            }
+        };
+        return Array.from(child.attributes).reduce((obj, prop) => ({
+            ...obj,
+            [prop.name]: mapAttr(prop),
+        }), {});
     }
 
 }

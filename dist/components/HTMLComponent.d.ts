@@ -6,4 +6,5 @@ export declare class HTMLComponent extends React.Component<HTMLComponentProps> {
     render(): JSX.Element;
     private parseHTML;
     private mapChild;
+    private mapAttributes;
 }

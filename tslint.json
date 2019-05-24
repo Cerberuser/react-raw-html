@@ -9,7 +9,8 @@
         "interface-name": false,
         "member-access": false,
         "member-ordering": false,
-        "jsx-no-multiline-js": false
+        "jsx-no-multiline-js": false,
+        "semicolon": [true, "always"]
     },
     "rulesDirectory": [],
     "linterOptions": {

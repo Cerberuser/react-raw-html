@@ -17,7 +17,7 @@ class HTMLComponent extends React.Component {
                 if (child instanceof HTMLScriptElement) {
                     return React.createElement(Script_1.Script, { key: "script-" + index, rawTag: child });
                 }
-                return React.createElement(child.tagName.toLowerCase(), Object.assign({ children: Array.from(child.childNodes).map(this.mapChild), key: child.tagName + "-" + index }, (Array.from(child.attributes).reduce((obj, prop) => (Object.assign({}, obj, { [prop.name]: prop.value })), {}))));
+                return React.createElement(child.tagName.toLowerCase(), Object.assign({ children: child.childNodes.length > 0 ? Array.from(child.childNodes).map(this.mapChild) : null, key: child.tagName + "-" + index }, this.mapAttributes(child)));
             }
             else if (child instanceof Text) {
                 const text = child.textContent;
@@ -26,6 +26,19 @@ class HTMLComponent extends React.Component {
             else {
                 return "Unknown node";
             }
+        };
+        this.mapAttributes = (child) => {
+            const mapAttr = (attr) => {
+                switch (attr.name) {
+                    case "style":
+                        const style = child.style;
+                        return Array.from(style)
+                            .reduce((obj, key) => (Object.assign({}, obj, { [key]: style[key] })), {});
+                    default:
+                        return attr.value;
+                }
+            };
+            return Array.from(child.attributes).reduce((obj, prop) => (Object.assign({}, obj, { [prop.name]: mapAttr(prop) })), {});
         };
     }
     render() {
