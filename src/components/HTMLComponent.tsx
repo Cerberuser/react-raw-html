@@ -36,6 +36,6 @@ export class HTMLComponent extends React.Component<HTMLComponentProps> {
         } else {
             return "Unknown node";
         }
-    };
+    }
 
 }
