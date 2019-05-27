@@ -33,7 +33,7 @@ class HTMLComponent extends React.Component {
                     case "style":
                         const style = child.style;
                         return Array.from(style)
-                            .reduce((obj, key) => (Object.assign({}, obj, { [key]: style[key] })), {});
+                            .reduce((obj, key) => (Object.assign({}, obj, { [key.replace((/-(.)/g), (match) => match[1].toUpperCase())]: style[key] })), {});
                     default:
                         return attr.value;
                 }

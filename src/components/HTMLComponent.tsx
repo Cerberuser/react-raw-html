@@ -1,5 +1,5 @@
 import * as React from "react";
-import {Script} from "./Script";
+import { Script } from "./Script";
 
 export interface HTMLComponentProps {
     rawHTML: string;
@@ -41,7 +41,12 @@ export class HTMLComponent extends React.Component<HTMLComponentProps> {
                 case "style":
                     const style = (child as HTMLElement).style;
                     return Array.from(style)
-                        .reduce((obj, key) => ({...obj, [key]: style[key as keyof CSSStyleDeclaration]}), {});
+                        .reduce((obj, key) => ({
+                            ...obj,
+                            [
+                                key.replace((/-(.)/g), (match) => match[1].toUpperCase())
+                                ]: style[key as keyof CSSStyleDeclaration],
+                        }), {});
                 default:
                     return attr.value;
             }
