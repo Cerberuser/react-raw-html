@@ -7,7 +7,7 @@
         "build": "rimraf ./dist && tsc -p tsconfig.build.json || exit 1",
         "check": "tslint --project . --fix || exit 1",
         "clean": "rimraf ./coverage && rimraf ./dist",
-        "git-add": "git add ./dist/*",
+        "git-add": "git add ./**/*",
         "test": "karma start"
     },
     "repository": {
