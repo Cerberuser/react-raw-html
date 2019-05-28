@@ -1,10 +1,10 @@
 // tslint:disable:no-console
 
-import {html} from "common-tags";
+import { html } from "common-tags";
 import "jasmine";
 import * as React from "react";
 import * as ReactDOM from "react-dom";
-import {HTMLComponent} from "../src";
+import { HTMLComponent } from "../src";
 
 function container() {
     return document.querySelector("#container")!;
@@ -18,7 +18,7 @@ const render = (rawHTML: string) => ReactDOM.render(
 function checkNode<T, C extends new (...args: any[]) => T>(
     node: T,
     klass: C,
-    props: {[K in keyof InstanceType<C>]?: InstanceType<C>[K]},
+    props: { [K in keyof InstanceType<C>]?: InstanceType<C>[K] },
 ) {
     expect(node.constructor).toBe(klass);
     Object.entries(props).forEach(([name, value]) => expect(node[name as keyof T]).toBe(value));
@@ -27,8 +27,6 @@ function checkNode<T, C extends new (...args: any[]) => T>(
 beforeEach(() => document.body.innerHTML = '<div id="container"></div>');
 
 describe("Generally", () => {
-    beforeEach(() => document.body.innerHTML = '<div id="container"></div>');
-
     it("should shallowly render raw HTML", () => {
         render(html`
             <div>Text in div</div>
