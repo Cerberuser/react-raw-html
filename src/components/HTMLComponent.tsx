@@ -1,11 +1,18 @@
 import * as React from "react";
 import { Script } from "./Script";
 
+export type ScriptBehaviour = "run" | "omit" | "asText" | "error";
+
 export interface HTMLComponentProps {
     rawHTML: string;
+    onScript: ScriptBehaviour;
 }
 
 export class HTMLComponent extends React.Component<HTMLComponentProps> {
+
+    static defaultProps = {
+        onScript: "asText",
+    };
 
     render() {
         return <React.Fragment>{this.parseHTML()}</React.Fragment>;
@@ -20,7 +27,7 @@ export class HTMLComponent extends React.Component<HTMLComponentProps> {
     private mapChild = (child: ChildNode, index: number): React.ReactNode => {
         if (child instanceof Element) {
             if (child instanceof HTMLScriptElement) {
-                return <Script key={"script-" + index} rawTag={child}/>;
+                return this.scriptRender(index, child);
             }
             return React.createElement(child.tagName.toLowerCase(), {
                 children: child.childNodes.length > 0 ? Array.from(child.childNodes).map(this.mapChild) : null,
@@ -33,7 +40,7 @@ export class HTMLComponent extends React.Component<HTMLComponentProps> {
         } else {
             return "Unknown node";
         }
-    }
+    };
 
     private mapAttributes = (child: Element) => {
         const mapAttr = (attr: Attr) => {
@@ -55,6 +62,19 @@ export class HTMLComponent extends React.Component<HTMLComponentProps> {
             ...obj,
             [prop.name]: mapAttr(prop),
         }), {});
-    }
+    };
+
+    private scriptRender = (index: number, script: HTMLScriptElement) => {
+        switch (this.props.onScript) {
+            case "run":
+                return <Script key={"script-" + index} rawTag={script}/>;
+            case "asText":
+                return script.outerHTML;
+            case "omit":
+                return null;
+            case "error":
+                throw new Error("Script tags are not allowed here");
+        }
+    };
 
 }

@@ -15,7 +15,7 @@ class HTMLComponent extends React.Component {
         this.mapChild = (child, index) => {
             if (child instanceof Element) {
                 if (child instanceof HTMLScriptElement) {
-                    return React.createElement(Script_1.Script, { key: "script-" + index, rawTag: child });
+                    return this.scriptRender(index, child);
                 }
                 return React.createElement(child.tagName.toLowerCase(), Object.assign({ children: child.childNodes.length > 0 ? Array.from(child.childNodes).map(this.mapChild) : null, key: child.tagName + "-" + index }, this.mapAttributes(child)));
             }
@@ -40,6 +40,18 @@ class HTMLComponent extends React.Component {
             };
             return Array.from(child.attributes).reduce((obj, prop) => (Object.assign({}, obj, { [prop.name]: mapAttr(prop) })), {});
         };
+        this.scriptRender = (index, script) => {
+            switch (this.props.onScript) {
+                case "run":
+                    return React.createElement(Script_1.Script, { key: "script-" + index, rawTag: script });
+                case "asText":
+                    return script.outerHTML;
+                case "omit":
+                    return null;
+                case "error":
+                    throw new Error("Script tags are not allowed here");
+            }
+        };
     }
     render() {
         return React.createElement(React.Fragment, null, this.parseHTML());
@@ -50,5 +62,8 @@ class HTMLComponent extends React.Component {
         return Array.from(div.childNodes).map(this.mapChild);
     }
 }
+HTMLComponent.defaultProps = {
+    onScript: "asText",
+};
 exports.HTMLComponent = HTMLComponent;
 //# sourceMappingURL=HTMLComponent.js.map

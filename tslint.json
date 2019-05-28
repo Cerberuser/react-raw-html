@@ -10,7 +10,11 @@
         "member-access": false,
         "member-ordering": false,
         "jsx-no-multiline-js": false,
-        "semicolon": [true, "always"]
+        "semicolon": [
+            true,
+            "always",
+            "strict-bound-class-methods"
+        ]
     },
     "rulesDirectory": [],
     "linterOptions": {

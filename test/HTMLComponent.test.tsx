@@ -4,14 +4,14 @@ import { html } from "common-tags";
 import "jasmine";
 import * as React from "react";
 import * as ReactDOM from "react-dom";
-import { HTMLComponent } from "../src";
+import { HTMLComponent, ScriptBehaviour } from "../src";
 
 function container() {
     return document.querySelector("#container")!;
 }
 
-const render = (rawHTML: string) => ReactDOM.render(
-    <HTMLComponent rawHTML={rawHTML}/>,
+const render = (rawHTML: string, scripts?: ScriptBehaviour) => ReactDOM.render(
+    <HTMLComponent rawHTML={rawHTML} onScript={scripts}/>,
     container(),
 );
 
@@ -95,11 +95,40 @@ describe("Generally", () => {
 });
 
 describe("Rendering scripts", () => {
-    it("should execute inline scripts", () => {
+    it("should by default render inline scripts as text", () => {
         render(html`
             <script>window.__testVar__ = 1;</script>
         `);
+        expect(container().textContent!.trim()).toBe("<script>window.__testVar__ = 1;</script>");
+    });
+
+    it("should render inline scripts as text when asked so", () => {
+        render(html`
+            <script>window.__testVar__ = 1;</script>
+        `, "asText");
+        expect(container().textContent!.trim()).toBe("<script>window.__testVar__ = 1;</script>");
+    });
+
+    it("should execute inline scripts when asked so", () => {
+        render(html`
+            <script>window.__testVar__ = 1;</script>
+        `, "run");
         expect((window as any).__testVar__).toBe(1);
+    });
+
+    it("should omit inline scripts when asked so", () => {
+        render(html`
+            <script>window.__testVar__ = 1;</script>
+        `, "omit");
+        expect((window as any).__testVar__).not.toBeDefined();
+        expect(container().innerHTML.trim()).toBe("");
+    });
+
+    it("should error on inline scripts when asked so", () => {
+        const renderer = () => render(html`
+            <script>window.__testVar__ = 1;</script>
+        `, "error");
+        expect(renderer).toThrowError("Script tags are not allowed here");
     });
 
 });
