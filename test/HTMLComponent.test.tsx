@@ -104,31 +104,31 @@ describe("Rendering scripts", () => {
 
     it("should render inline scripts as text when asked so", () => {
         render(html`
-            <script>window.__testVar__ = 1;</script>
+            <script>window.__testVarAsText__ = 1;</script>
         `, "asText");
-        expect(container().textContent!.trim()).toBe("<script>window.__testVar__ = 1;</script>");
+        expect(container().textContent!.trim()).toBe("<script>window.__testVarAsText__ = 1;</script>");
     });
 
     it("should execute inline scripts when asked so", () => {
         render(html`
-            <script>window.__testVar__ = 1;</script>
+            <script>window.__testVarRun__ = 1;</script>
         `, "run");
-        expect((window as any).__testVar__).toBe(1);
+        expect((window as any).__testVarRun__).toBe(1);
     });
 
     it("should omit inline scripts when asked so", () => {
         render(html`
-            <script>window.__testVar__ = 1;</script>
+            <script>window.__testVarOmit__ = 1;</script>
         `, "omit");
-        expect((window as any).__testVar__).not.toBeDefined();
+        expect((window as any).__testVarOmit__).not.toBe(1);
         expect(container().innerHTML.trim()).toBe("");
     });
 
     it("should error on inline scripts when asked so", () => {
         const renderer = () => render(html`
-            <script>window.__testVar__ = 1;</script>
+            <script>window.__testVarError__ = 1;</script>
         `, "error");
-        expect(renderer).toThrowError("Script tags are not allowed here");
+        expect(renderer).toThrow();
     });
 
 });
