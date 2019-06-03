@@ -1,6 +1,6 @@
 {
     "name": "react-typescript-raw-html",
-    "version": "0.0.2",
+    "version": "0.0.3",
     "description": "React component to render raw HTML without explicitly setting innerHTML property.",
     "main": "dist/index.js",
     "scripts": {
@@ -24,6 +24,9 @@
         "url": "https://github.com/Cerberuser/react-raw-html/issues"
     },
     "homepage": "https://github.com/Cerberuser/react-raw-html#readme",
+    "dependencies": {
+        "unreachable-ts": "1.0.0"
+    },
     "devDependencies": {
         "@types/common-tags": "1.8.0",
         "@types/jasmine": "3.3.12",

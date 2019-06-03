@@ -1,4 +1,5 @@
 import * as React from "react";
+import { unreachable } from "unreachable-ts";
 import { Script } from "./Script";
 
 export type ScriptBehaviour = "run" | "omit" | "asText" | "error";
@@ -74,6 +75,8 @@ export class HTMLComponent extends React.Component<HTMLComponentProps> {
                 return null;
             case "error":
                 throw new Error("Script tags are not allowed here");
+            default:
+                return unreachable(this.props.onScript, "onScript prop value in unexpected");
         }
     };
 

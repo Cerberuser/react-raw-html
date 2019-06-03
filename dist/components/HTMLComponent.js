@@ -8,6 +8,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = __importStar(require("react"));
+const unreachable_ts_1 = require("unreachable-ts");
 const Script_1 = require("./Script");
 class HTMLComponent extends React.Component {
     constructor() {
@@ -50,6 +51,8 @@ class HTMLComponent extends React.Component {
                     return null;
                 case "error":
                     throw new Error("Script tags are not allowed here");
+                default:
+                    return unreachable_ts_1.unreachable(this.props.onScript, "onScript prop value in unexpected");
             }
         };
     }

@@ -4,14 +4,16 @@ import { html } from "common-tags";
 import "jasmine";
 import * as React from "react";
 import * as ReactDOM from "react-dom";
+// import { UnreachableError } from "unreachable-ts";
 import { HTMLComponent, ScriptBehaviour } from "../src";
+import { ErrorBoundary } from "./ErrorBoundary";
 
 function container() {
     return document.querySelector("#container") as HTMLDivElement;
 }
 
-const render = (rawHTML: string, scripts?: ScriptBehaviour) => ReactDOM.render(
-    <HTMLComponent rawHTML={rawHTML} onScript={scripts}/>,
+const render = (rawHTML: string, scripts?: ScriptBehaviour, onCatch?: (error: Error) => void) => ReactDOM.render(
+    <ErrorBoundary onError={onCatch}><HTMLComponent rawHTML={rawHTML} onScript={scripts}/></ErrorBoundary>,
     container(),
 );
 
@@ -126,12 +128,20 @@ describe("Rendering scripts", () => {
         expect(container().innerHTML.trim()).toBe("");
     });
 
-    // TODO: it seems that I'm not able to test this yet, since the error is thrown outside of the expectation
     // it("should error on inline scripts when asked so", () => {
-    //     renderer = () => render(html`
+    //     const onError = jasmine.createSpy();
+    //     render(html`
     //         <script>window.__testVarError__ = 1;</script>
-    //     `, "error");
-    //     expect(renderer).toThrowError("Script tags are not allowed here");
+    //     `, "error", onError);
+    //     expect(onError).toHaveBeenCalledWith(new Error("Script tags are not allowed here"));
+    // });
+    //
+    // it("should error on inline scripts if don't know what to do", () => {
+    //     const onError = jasmine.createSpy();
+    //     render(html`
+    //         <script>window.__testVarError__ = 1;</script>
+    //     `, "gibberish" as any, onError);
+    //     expect(onError).toHaveBeenCalledWith(new UnreachableError("onScript prop value in unexpected"));
     // });
 
 });
