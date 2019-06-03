@@ -67,6 +67,29 @@ describe("Generally", () => {
         expect(inner!.textContent!.trim()).toBe("Text in inner div");
     });
 
+    it("should render entire page", () => {
+        render(html`
+            <!DOCTYPE html>
+            <html>
+                <head>
+                    <title>Test page</title>
+                    <link
+                        href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+                        rel="stylesheet"
+                    />
+                </head>
+                <body>
+                    <div style="width: 100px;">
+                        <div id="inner" class="col-6"></div>
+                    </div>
+                </body>
+            </html>
+        `);
+        const inner = container().querySelector("#inner") as HTMLDivElement;
+        expect(inner).not.toBeNull();
+        // expect(getComputedStyle(inner).getPropertyValue("width")).toBe("50px"); - TODO
+    });
+
     it("should render raw HTML deeply", () => {
         render(html`
             <div>

@@ -30,11 +30,24 @@ export class HTMLComponent extends React.Component<HTMLComponentProps> {
             if (child instanceof HTMLScriptElement) {
                 return this.scriptRender(index, child);
             }
-            return React.createElement(child.tagName.toLowerCase(), {
+            let childComponent;
+            switch (child.constructor) {
+                case HTMLHtmlElement:
+                case HTMLHeadElement:
+                case HTMLBodyElement:
+                    childComponent = React.Fragment;
+                    break;
+                case HTMLTitleElement:
+                    return null; // don't use it at all
+                default:
+                    childComponent = child.tagName.toLowerCase();
+            }
+            const props = {
                 children: child.childNodes.length > 0 ? Array.from(child.childNodes).map(this.mapChild) : null,
                 key: child.tagName + "-" + index,
                 ...this.mapAttributes(child),
-            });
+            };
+            return React.createElement(childComponent, props);
         } else if (child instanceof Text) {
             const text = child.textContent;
             return !text || text.trim() === "" ? null : text;
@@ -47,21 +60,26 @@ export class HTMLComponent extends React.Component<HTMLComponentProps> {
         const mapAttr = (attr: Attr) => {
             switch (attr.name) {
                 case "style":
-                    const style = (child as HTMLElement).style;
-                    return Array.from(style)
+                    const styleDeclaration = (child as HTMLElement).style;
+                    const style = Array.from(styleDeclaration)
                         .reduce((obj, key) => ({
                             ...obj,
                             [
                                 key.replace((/-(.)/g), (match) => match[1].toUpperCase())
-                                ]: style[key as keyof CSSStyleDeclaration],
+                                ]: styleDeclaration[key as keyof CSSStyleDeclaration],
                         }), {});
+                    return {
+                        style,
+                    };
+                case "class":
+                    return {className: attr.value};
                 default:
-                    return attr.value;
+                    return {[attr.name]: attr.value};
             }
         };
         return Array.from(child.attributes).reduce((obj, prop) => ({
             ...obj,
-            [prop.name]: mapAttr(prop),
+            ...mapAttr(prop),
         }), {});
     };
 

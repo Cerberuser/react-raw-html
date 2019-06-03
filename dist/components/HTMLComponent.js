@@ -18,7 +18,20 @@ class HTMLComponent extends React.Component {
                 if (child instanceof HTMLScriptElement) {
                     return this.scriptRender(index, child);
                 }
-                return React.createElement(child.tagName.toLowerCase(), Object.assign({ children: child.childNodes.length > 0 ? Array.from(child.childNodes).map(this.mapChild) : null, key: child.tagName + "-" + index }, this.mapAttributes(child)));
+                let childComponent;
+                switch (child.constructor) {
+                    case HTMLHtmlElement:
+                    case HTMLHeadElement:
+                    case HTMLBodyElement:
+                        childComponent = React.Fragment;
+                        break;
+                    case HTMLTitleElement:
+                        return null; // don't use it at all
+                    default:
+                        childComponent = child.tagName.toLowerCase();
+                }
+                const props = Object.assign({ children: child.childNodes.length > 0 ? Array.from(child.childNodes).map(this.mapChild) : null, key: child.tagName + "-" + index }, this.mapAttributes(child));
+                return React.createElement(childComponent, props);
             }
             else if (child instanceof Text) {
                 const text = child.textContent;
@@ -32,14 +45,19 @@ class HTMLComponent extends React.Component {
             const mapAttr = (attr) => {
                 switch (attr.name) {
                     case "style":
-                        const style = child.style;
-                        return Array.from(style)
-                            .reduce((obj, key) => (Object.assign({}, obj, { [key.replace((/-(.)/g), (match) => match[1].toUpperCase())]: style[key] })), {});
+                        const styleDeclaration = child.style;
+                        const style = Array.from(styleDeclaration)
+                            .reduce((obj, key) => (Object.assign({}, obj, { [key.replace((/-(.)/g), (match) => match[1].toUpperCase())]: styleDeclaration[key] })), {});
+                        return {
+                            style,
+                        };
+                    case "class":
+                        return { className: attr.value };
                     default:
-                        return attr.value;
+                        return { [attr.name]: attr.value };
                 }
             };
-            return Array.from(child.attributes).reduce((obj, prop) => (Object.assign({}, obj, { [prop.name]: mapAttr(prop) })), {});
+            return Array.from(child.attributes).reduce((obj, prop) => (Object.assign({}, obj, mapAttr(prop))), {});
         };
         this.scriptRender = (index, script) => {
             switch (this.props.onScript) {

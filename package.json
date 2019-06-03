@@ -1,8 +1,9 @@
 {
     "name": "react-typescript-raw-html",
-    "version": "0.0.3",
+    "version": "0.0.4",
     "description": "React component to render raw HTML without explicitly setting innerHTML property.",
     "main": "dist/index.js",
+    "types": "dist/index.d.ts",
     "scripts": {
         "build": "rimraf ./dist && tsc -p tsconfig.build.json || exit 1",
         "check": "tslint --project . --fix || exit 1",

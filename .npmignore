@@ -1,1 +1,6 @@
 /test/
+/tsconfig.build.json
+/tslint.json
+/.editorconfig
+/karma.conf.js
+/tsconfig.json
