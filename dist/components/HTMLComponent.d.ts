@@ -5,6 +5,7 @@ export interface HTMLComponentProps {
     onScript: ScriptBehaviour;
 }
 export declare class HTMLComponent extends React.Component<HTMLComponentProps> {
+    private scriptLoaders;
     static defaultProps: {
         onScript: string;
     };

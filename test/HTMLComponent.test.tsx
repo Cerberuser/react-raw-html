@@ -17,6 +17,13 @@ const render = (rawHTML: string, scripts?: ScriptBehaviour, onCatch?: (error: Er
     container(),
 );
 
+const loadSelector = async (selector: string) => {
+    const element = container().querySelector(selector);
+    expect(element).not.toBe(null);
+    await new Promise((ok) => element!.addEventListener("load", ok));
+};
+const skipFrame = async () => await new Promise((ok) => setTimeout(ok, 1));
+
 function checkNode<T, C extends new (...args: any[]) => T>(
     node: T,
     klass: C,
@@ -26,7 +33,9 @@ function checkNode<T, C extends new (...args: any[]) => T>(
     Object.entries(props).forEach(([name, value]) => expect(node[name as keyof T]).toBe(value));
 }
 
-beforeEach(() => document.body.innerHTML = '<div id="container"></div>');
+beforeEach(() => {
+    document.body.innerHTML = '<div id="container"></div>';
+});
 
 describe("Generally", () => {
     it("should shallowly render raw HTML", () => {
@@ -136,10 +145,11 @@ describe("Script handling types", () => {
         expect(container().innerText.trim()).toBe("<script>window.__testVarAsText__ = 1;</script>");
     });
 
-    it("should execute inline scripts when asked so", () => {
+    it("should execute inline scripts when asked so", async () => {
         render(html`
-            <script>window.__testVarRun__ = 1;</script>
+            <script id="script">window.__testVarRun__ = 1;</script>
         `, "run");
+        await skipFrame();
         expect((window as any).__testVarRun__).toBe(1);
     });
 
@@ -170,15 +180,33 @@ describe("Script handling types", () => {
 });
 
 describe("Script running types", () => {
+
+    beforeEach(() => {
+        if ("$" in window) {
+            delete (window as any).$;
+        }
+    });
+
     it("should fetch script from the CDN", async () => {
         render(html`
             <div id="test"></div>
-            <script id="script" type="text/javascript" src="https://code.jquery.com/jquery-3.4.1.slim.min.js"/>
+            <script id="script" type="text/javascript" src="https://code.jquery.com/jquery-3.4.1.slim.min.js"></script>
         `, "run");
-        const script = container().querySelector("#script");
-        expect(script).not.toBe(null);
-        await new Promise((ok) => script!.addEventListener("load", ok));
+        await loadSelector( "#script");
         expect((window as any).$).toBeDefined();
         expect((window as any).$("#test")[0]).toBe(container().querySelector("#test"));
     });
+
+    it("should see script from the CDN in the consecutive script tags", async () => {
+        render(html`
+            <div id="test"></div>
+            <script id="script" type="text/javascript" src="https://code.jquery.com/jquery-3.4.1.slim.min.js"></script>
+            <script id="second-script">$("#test")[0].innerText = "Test text";</script>
+        `, "run");
+        await loadSelector( "#script");
+        await skipFrame();
+        expect((window as any).$).toBeDefined();
+        expect((window as any).$("#test")[0].innerText).toBe("Test text");
+    });
+
 });

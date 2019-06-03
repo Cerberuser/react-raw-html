@@ -13,6 +13,7 @@ const Script_1 = require("./Script");
 class HTMLComponent extends React.Component {
     constructor() {
         super(...arguments);
+        this.scriptLoaders = [];
         this.mapChild = (child, index) => {
             if (child instanceof Element) {
                 if (child instanceof HTMLScriptElement) {
@@ -62,7 +63,10 @@ class HTMLComponent extends React.Component {
         this.scriptRender = (index, script) => {
             switch (this.props.onScript) {
                 case "run":
-                    return React.createElement(Script_1.Script, { key: "script-" + index, rawTag: script });
+                    const defer = {};
+                    defer.promise = new Promise((ok) => defer.callback = ok);
+                    this.scriptLoaders.push(defer);
+                    return (React.createElement(Script_1.Script, { loaders: this.scriptLoaders.map((item) => item.promise), defer: defer, key: "script-" + index, rawTag: script }));
                 case "asText":
                     return script.outerHTML;
                 case "omit":
@@ -75,6 +79,7 @@ class HTMLComponent extends React.Component {
         };
     }
     render() {
+        this.scriptLoaders = [];
         return React.createElement(React.Fragment, null, this.parseHTML());
     }
     parseHTML() {

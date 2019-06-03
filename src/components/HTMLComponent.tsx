@@ -9,13 +9,21 @@ export interface HTMLComponentProps {
     onScript: ScriptBehaviour;
 }
 
+interface IDefer {
+    callback: () => void;
+    promise: Promise<void>;
+}
+
 export class HTMLComponent extends React.Component<HTMLComponentProps> {
+
+    private scriptLoaders: IDefer[] = [];
 
     static defaultProps = {
         onScript: "asText",
     };
 
     render() {
+        this.scriptLoaders = [];
         return <React.Fragment>{this.parseHTML()}</React.Fragment>;
     }
 
@@ -86,7 +94,17 @@ export class HTMLComponent extends React.Component<HTMLComponentProps> {
     private scriptRender = (index: number, script: HTMLScriptElement) => {
         switch (this.props.onScript) {
             case "run":
-                return <Script key={"script-" + index} rawTag={script}/>;
+                const defer = {} as IDefer;
+                defer.promise = new Promise((ok) => defer.callback = ok);
+                this.scriptLoaders.push(defer);
+                return (
+                    <Script
+                        loaders={this.scriptLoaders.map((item) => item.promise)}
+                        defer={defer}
+                        key={"script-" + index}
+                        rawTag={script}
+                    />
+                );
             case "asText":
                 return script.outerHTML;
             case "omit":
