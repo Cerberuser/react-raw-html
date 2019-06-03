@@ -15,10 +15,8 @@ export class Script extends React.Component<IScriptProps> {
         const node = ReactDOM.findDOMNode(this) as Element;
         const script = document.createElement("script");
         script.textContent = this.props.rawTag.textContent;
-        for (const prop in this.props.rawTag.attributes) {
-            if (this.props.rawTag.getAttribute(prop)) {
-                script.setAttribute(prop, this.props.rawTag.getAttribute(prop)!);
-            }
+        for (const prop of this.props.rawTag.attributes) {
+            script.setAttribute(prop.name, prop.value);
         }
         node.innerHTML = "";
         node.appendChild(script);

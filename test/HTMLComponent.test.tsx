@@ -119,7 +119,7 @@ describe("Generally", () => {
 
 });
 
-describe("Rendering scripts", () => {
+describe("Script handling types", () => {
     it("should by default render inline scripts as text", () => {
         render(html`
             <script>window.__testVar__ = 1;</script>
@@ -167,4 +167,18 @@ describe("Rendering scripts", () => {
     //     expect(onError).toHaveBeenCalledWith(new UnreachableError("onScript prop value in unexpected"));
     // });
 
+});
+
+describe("Script running types", () => {
+    it("should fetch script from the CDN", async () => {
+        render(html`
+            <div id="test"></div>
+            <script id="script" type="text/javascript" src="https://code.jquery.com/jquery-3.4.1.slim.min.js"/>
+        `, "run");
+        const script = container().querySelector("#script");
+        expect(script).not.toBe(null);
+        await new Promise((ok) => script!.addEventListener("load", ok));
+        expect((window as any).$).toBeDefined();
+        expect((window as any).$("#test")[0]).toBe(container().querySelector("#test"));
+    });
 });

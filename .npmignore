@@ -1,3 +1,5 @@
+/coverage/
+/.idea/
 /test/
 /tsconfig.build.json
 /tslint.json
