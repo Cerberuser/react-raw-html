@@ -3607,10 +3607,10 @@ unpipe@1.0.0, unpipe@~1.0.0:
   resolved "https://registry.yarnpkg.com/unpipe/-/unpipe-1.0.0.tgz#b2bf4ee8514aae6165b4817829d21b2ef49904ec"
   integrity sha1-sr9O6FFKrmFltIF4KdIbLvSZBOw=
 
-unreachable-ts@1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/unreachable-ts/-/unreachable-ts-1.0.0.tgz#e19d4fccf33582d9415c257c1a410ebeb033eac6"
-  integrity sha512-LcHLzqbVugQUe6v20SBN7AZpyiTqyl+ei7OEVcBn75yO+zt3q0ZcIz1T7qN6qtJgaeGONW8nhCeb3akndeM6eQ==
+unreachable-ts@2.0.0-alpha.1:
+  version "2.0.0-alpha.1"
+  resolved "https://registry.yarnpkg.com/unreachable-ts/-/unreachable-ts-2.0.0-alpha.1.tgz#731038007c2ed4adc9e8b98c750b6ce8eb50bc17"
+  integrity sha512-A0sGsDEJ1mFVVA3AHpLSFCOvKE2s0XXs57GU92zMhzjr+IScm5TD1QxxuOPY03bvzGJnaPbRiFQ/O0FTdBIjjg==
 
 unset-value@^1.0.0:
   version "1.0.0"

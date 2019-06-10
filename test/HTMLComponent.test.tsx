@@ -4,7 +4,7 @@ import { html } from "common-tags";
 import "jasmine";
 import * as React from "react";
 import * as ReactDOM from "react-dom";
-// import { UnreachableError } from "unreachable-ts";
+import { UnreachableError } from "unreachable-ts";
 import { HTMLComponent, ScriptBehaviour } from "../src";
 import { ErrorBoundary } from "./ErrorBoundary";
 
@@ -129,6 +129,8 @@ describe("Generally", () => {
 });
 
 describe("Script handling types", () => {
+    beforeEach(() => window.onerror = () => {/**/});
+
     it("should by default render inline scripts as text", () => {
         render(html`
             <script>window.__testVar__ = 1;</script>
@@ -161,21 +163,21 @@ describe("Script handling types", () => {
         expect(container().innerHTML.trim()).toBe("");
     });
 
-    // it("should error on inline scripts when asked so", () => {
-    //     const onError = jasmine.createSpy();
-    //     render(html`
-    //         <script>window.__testVarError__ = 1;</script>
-    //     `, "error", onError);
-    //     expect(onError).toHaveBeenCalledWith(new Error("Script tags are not allowed here"));
-    // });
-    //
-    // it("should error on inline scripts if don't know what to do", () => {
-    //     const onError = jasmine.createSpy();
-    //     render(html`
-    //         <script>window.__testVarError__ = 1;</script>
-    //     `, "gibberish" as any, onError);
-    //     expect(onError).toHaveBeenCalledWith(new UnreachableError("onScript prop value in unexpected"));
-    // });
+    it("should error on inline scripts when asked so", () => {
+        const onError = jasmine.createSpy();
+        render(html`
+            <script>window.__testVarError__ = 1;</script>
+        `, "error", onError);
+        expect(onError).toHaveBeenCalledWith(new Error("Script tags are not allowed here"));
+    });
+
+    it("should error on inline scripts if don't know what to do", () => {
+        const onError = jasmine.createSpy();
+        render(html`
+            <script>window.__testVarError__ = 1;</script>
+        `, "gibberish" as any, onError);
+        expect(onError).toHaveBeenCalledWith(new UnreachableError("onScript prop value in unexpected"));
+    });
 
 });
 
