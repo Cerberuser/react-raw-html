@@ -94,12 +94,13 @@ export class HTMLComponent extends React.Component<HTMLComponentProps> {
     private scriptRender = (index: number, script: HTMLScriptElement) => {
         switch (this.props.onScript) {
             case "run":
+                const existingLoaders = this.scriptLoaders.map((item) => item.promise);
                 const defer = {} as IDefer;
                 defer.promise = new Promise((ok) => defer.callback = ok);
                 this.scriptLoaders.push(defer);
                 return (
                     <Script
-                        loaders={this.scriptLoaders.map((item) => item.promise)}
+                        loaders={existingLoaders}
                         defer={defer}
                         key={"script-" + index}
                         rawTag={script}
@@ -112,7 +113,10 @@ export class HTMLComponent extends React.Component<HTMLComponentProps> {
             case "error":
                 throw new Error("Script tags are not allowed here");
             default:
-                return unreachable(this.props.onScript, "onScript prop value in unexpected");
+                return unreachable(
+                    this.props.onScript,
+                    "onScript prop value is unexpected: " + JSON.stringify(this.props.onScript),
+                );
         }
     };
 

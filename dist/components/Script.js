@@ -35,8 +35,8 @@ class Script extends React.Component {
             }
             else {
                 this.props.defer.callback();
-                yield Promise.all(this.props.loaders);
             }
+            yield Promise.all(this.props.loaders);
             node.appendChild(script);
         });
     }

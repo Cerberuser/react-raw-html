@@ -18,7 +18,11 @@ const render = (rawHTML: string, scripts?: ScriptBehaviour, onCatch?: (error: Er
 );
 
 const loadSelector = async (selector: string) => {
-    const element = container().querySelector(selector);
+    let element = container().querySelector(selector);
+    if (element === null) {
+        await skipFrame();
+        element = container().querySelector(selector);
+    }
     expect(element).not.toBe(null);
     await new Promise((ok) => element!.addEventListener("load", ok));
 };
@@ -129,7 +133,8 @@ describe("Generally", () => {
 });
 
 describe("Script handling types", () => {
-    beforeEach(() => window.onerror = () => {/**/});
+    beforeEach(() => window.onerror = () => {/**/
+    });
 
     it("should by default render inline scripts as text", () => {
         render(html`
@@ -176,7 +181,7 @@ describe("Script handling types", () => {
         render(html`
             <script>window.__testVarError__ = 1;</script>
         `, "gibberish" as any, onError);
-        expect(onError).toHaveBeenCalledWith(new UnreachableError("onScript prop value in unexpected"));
+        expect(onError).toHaveBeenCalledWith(new UnreachableError("onScript prop value is unexpected: \"gibberish\""));
     });
 
 });
@@ -192,9 +197,11 @@ describe("Script running types", () => {
     it("should fetch script from the CDN", async () => {
         render(html`
             <div id="test"></div>
-            <script id="script" type="text/javascript" src="https://code.jquery.com/jquery-3.4.1.slim.min.js"></script>
+            <script id="script" type="text/javascript" src="https://code.jquery.com/jquery-3.4.1.slim.min.js?test1">
+            </script>
         `, "run");
-        await loadSelector( "#script");
+        await loadSelector("#script");
+        await skipFrame();
         expect((window as any).$).toBeDefined();
         expect((window as any).$("#test")[0]).toBe(container().querySelector("#test"));
     });
@@ -202,13 +209,33 @@ describe("Script running types", () => {
     it("should see script from the CDN in the consecutive script tags", async () => {
         render(html`
             <div id="test"></div>
-            <script id="script" type="text/javascript" src="https://code.jquery.com/jquery-3.4.1.slim.min.js"></script>
+            <script id="script" type="text/javascript" src="https://code.jquery.com/jquery-3.4.1.slim.min.js?test2">
+            </script>
             <script id="second-script">$("#test")[0].innerText = "Test text";</script>
         `, "run");
-        await loadSelector( "#script");
+        await loadSelector("#script");
         await skipFrame();
         expect((window as any).$).toBeDefined();
         expect((window as any).$("#test")[0].innerText).toBe("Test text");
+    });
+
+    it("should see script from the CDN in the consecutive script from the CDN", async () => {
+        render(html`
+            <div id="test"></div>
+            <script id="script" type="text/javascript" src="https://code.jquery.com/jquery-3.4.1.slim.min.js?test3">
+            </script>
+            <script
+                id="second-script"
+                type="text/javascript"
+                src="https://cdn.jsdelivr.net/npm/jquery-once@2.2.3/jquery.once.min.js"
+            ></script>
+            <script id="third-script">$("#test").once("test")[0].innerText = "Test text";</script>
+        `, "run");
+        await loadSelector("#script");
+        await loadSelector("#second-script");
+        await skipFrame();
+        expect((window as any).$).toBeDefined();
+        expect((window as any).$("#test").findOnce("test")[0].innerText).toBe("Test text");
     });
 
 });

@@ -25,8 +25,8 @@ export class Script extends React.Component<IScriptProps> {
             script.addEventListener("load", this.props.defer.callback);
         } else {
             this.props.defer.callback();
-            await Promise.all(this.props.loaders);
         }
+        await Promise.all(this.props.loaders);
         node.appendChild(script);
     }
 

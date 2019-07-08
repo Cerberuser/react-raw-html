@@ -63,10 +63,11 @@ class HTMLComponent extends React.Component {
         this.scriptRender = (index, script) => {
             switch (this.props.onScript) {
                 case "run":
+                    const existingLoaders = this.scriptLoaders.map((item) => item.promise);
                     const defer = {};
                     defer.promise = new Promise((ok) => defer.callback = ok);
                     this.scriptLoaders.push(defer);
-                    return (React.createElement(Script_1.Script, { loaders: this.scriptLoaders.map((item) => item.promise), defer: defer, key: "script-" + index, rawTag: script }));
+                    return (React.createElement(Script_1.Script, { loaders: existingLoaders, defer: defer, key: "script-" + index, rawTag: script }));
                 case "asText":
                     return script.outerHTML;
                 case "omit":
@@ -74,7 +75,7 @@ class HTMLComponent extends React.Component {
                 case "error":
                     throw new Error("Script tags are not allowed here");
                 default:
-                    return unreachable_ts_1.unreachable(this.props.onScript, "onScript prop value in unexpected");
+                    return unreachable_ts_1.unreachable(this.props.onScript, "onScript prop value is unexpected: " + JSON.stringify(this.props.onScript));
             }
         };
     }
