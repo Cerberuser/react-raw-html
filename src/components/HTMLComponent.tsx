@@ -70,15 +70,14 @@ export class HTMLComponent extends React.Component<HTMLComponentProps> {
                 case "style":
                     const styleDeclaration = (child as HTMLElement).style;
                     const style = Array.from(styleDeclaration)
-                        .reduce((obj, key) => ({
-                            ...obj,
-                            [
-                                key.replace((/-(.)/g), (match) => match[1].toUpperCase())
-                                ]: styleDeclaration[key as keyof CSSStyleDeclaration],
-                        }), {});
-                    return {
-                        style,
-                    };
+                        .reduce((obj, key) => {
+                            const newKey = key.replace((/-(.)/g), (match) => match[1].toUpperCase());
+                            return ({
+                                ...obj,
+                                [newKey]: styleDeclaration[key as keyof CSSStyleDeclaration],
+                            });
+                        }, {});
+                    return {style};
                 case "class":
                     return {className: attr.value};
                 default:
